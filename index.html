@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste de Prix Sous-traitance 2025</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2em;
+        }
+        
+        .date {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .btn-export {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .btn-export:hover {
+            background-color: #229954;
+        }
+        
+        .btn-reset {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .btn-reset:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-edit {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-edit:hover {
+            background-color: #2980b9;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th {
+            background-color: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .service-name {
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .price-cell {
+            text-align: right;
+            color: #27ae60;
+            font-weight: 600;
+        }
+        
+        .unit-cell {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .edit-mode input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #667eea;
+            border-radius: 3px;
+            font-size: 1em;
+        }
+        
+        .edit-btn {
+            background-color: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            margin: 0;
+        }
+        
+        .edit-btn:hover {
+            background-color: #e67e22;
+        }
+        
+        .save-btn {
+            background-color: #27ae60;
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.8em;
+            margin: 0;
+        }
+        
+        .save-btn:hover {
+            background-color: #229954;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 30px;
+            font-size: 0.9em;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .section {
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            background-color: #ecf0f1;
+            padding: 10px 15px;
+            font-weight: 600;
+            color: #333;
+            margin: 20px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Liste de Prix Sous-traitance</h1>
+        <div class="date">Année 2025 | Dernière mise à jour: <span id="lastUpdate"></span></div>
+        
+        <div class="controls">
+            <button class="btn-edit" onclick="toggleEditMode()">✏️ Mode Édition</button>
+            <button class="btn-export" onclick="exportToCSV()">📥 Télécharger (CSV)</button>
+            <button class="btn-reset" onclick="resetPrices()">🔄 Réinitialiser</button>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un service..." onkeyup="filterTable()">
+        </div>
+        
+        <table id="priceTable">
+            <thead>
+                <tr>
+                    <th>Service</th>
+                    <th style="text-align: right; width: 150px;">Prix</th>
+                    <th style="text-align: center; width: 80px;">Unité</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+        
+        <div class="footer">
+            <p>💾 Les modifications sont sauvegardées automatiquement</p>
+        </div>
+    </div>
+    
+    <script>
+        const prices = [
+            { id: 1, name: "Bardeau 6/12 et moins incluant sous couche", price: 55.00, unit: "$/paquet" },
+            { id: 2, name: "Bardeau 6 1/12 et plus incluant sous couche", price: 70.00, unit: "$/paquet" },
+            { id: 3, name: "Lucarne, Petit Toit, Entrée de maison, bay windows, Pen lucarne", price: 150.00, unit: "$/ch." },
+            { id: 4, name: "Cobra Snow - Faîte ventilé en plastique", price: 40.00, unit: "$/section" },
+            { id: 5, name: "Cobra Snow - Faîte ventilé en acier", price: 70.00, unit: "$/section" },
+            { id: 6, name: "Membrane plus de 2 rangs", price: 85.00, unit: "$/rouleau" },
+            { id: 7, name: "Uréthane - Arracher le bois et laine en pad", price: 3.25, unit: "$/pi²" },
+            { id: 8, name: "Uréthane - Laine en vrac (supplément)", price: 1.00, unit: "$/pi²" },
+            { id: 9, name: "Arrachage de bois et contreplaqué", price: 1.20, unit: "$/pi²" },
+            { id: 10, name: "Installation de contreplaqué ½\"", price: 40.00, unit: "$/feuille" },
+            { id: 11, name: "Installation de contreplaqué 5/8\"", price: 45.00, unit: "$/feuille" },
+            { id: 12, name: "Installation de contreplaqué 3/4\"", price: 50.00, unit: "$/feuille" },
+            { id: 13, name: "Tourelle", price: 500.00, unit: "$ minimum" },
+            { id: 14, name: "Solin de cheminée en aluminium (matériaux inclus)", price: 400.00, unit: "$ minimum" },
+            { id: 15, name: "Solin de cheminée en acier (supplément)", price: 110.00, unit: "$ plus" },
+            { id: 16, name: "Installation de sortie de hotte (cuisine/salle de bain)", price: 350.00, unit: "$" },
+            { id: 17, name: "Toit plat", price: 4.00, unit: "$/pi² (min. 600$)" },
+            { id: 18, name: "Ben-O-Vent", price: 8.00, unit: "$/unité" },
+            { id: 19, name: "Soffite et fascia - 1 patte d'échafaud de haut", price: 15.00, unit: "$/pi²" },
+            { id: 20, name: "Soffite et fascia - 2 pattes d'échafaud de haut", price: 20.00, unit: "$/pi²" },
+            { id: 21, name: "Flench mural (Solin encastré)", price: 22.00, unit: "$/pied linéaire" },
+            { id: 22, name: "Installation de membrane haute densité", price: 125.00, unit: "$/rouleau" }
+        ];
+        
+        let editMode = false;
+        let originalPrices = JSON.parse(JSON.stringify(prices));
+        
+        function initTable() {
+            loadFromStorage();
+            renderTable();
+            updateLastModified();
+        }
+        
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+            
+            prices.forEach(item => {
+                const row = document.createElement('tr');
+                row.id = `row-${item.id}`;
+                
+                const priceDisplay = editMode 
+                    ? `<input type="number" step="0.01" value="${item.price.toFixed(2)}" id="price-${item.id}" onchange="updatePrice(${item.id})">`
+                    : `${item.price.toFixed(2)}`;
+                
+                row.innerHTML = `
+                    <td class="service-name">${item.name}</td>
+                    <td class="price-cell">${priceDisplay}</td>
+                    <td class="unit-cell">${item.unit}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        function toggleEditMode() {
+            editMode = !editMode;
+            document.querySelector('.btn-edit').style.opacity = editMode ? '0.7' : '1';
+            renderTable();
+        }
+        
+        function updatePrice(id) {
+            const newPrice = parseFloat(document.getElementById(`price-${id}`).value);
+            const item = prices.find(p => p.id === id);
+            if (item) {
+                item.price = newPrice;
+                saveToStorage();
+            }
+        }
+        
+        function saveToStorage() {
+            localStorage.setItem('prices', JSON.stringify(prices));
+            updateLastModified();
+        }
+        
+        function loadFromStorage() {
+            const stored = localStorage.getItem('prices');
+            if (stored) {
+                const stored_prices = JSON.parse(stored);
+                prices.forEach(p => {
+                    const stored_price = stored_prices.find(sp => sp.id === p.id);
+                    if (stored_price) {
+                        p.price = stored_price.price;
+                    }
+                });
+            }
+        }
+        
+        function resetPrices() {
+            if (confirm('Êtes-vous sûr de vouloir réinitialiser tous les prix à leurs valeurs d\'origine?')) {
+                prices.forEach((p, i) => {
+                    p.price = originalPrices[i].price;
+                });
+                saveToStorage();
+                renderTable();
+                if (editMode) {
+                    toggleEditMode();
+                }
+            }
+        }
+        
+        function filterTable() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#tableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+        
+        function exportToCSV() {
+            let csv = 'Service,Prix,Unité\n';
+            prices.forEach(item => {
+                const name = `"${item.name.replace(/"/g, '""')}"`;
+                csv += `${name},${item.price.toFixed(2)},${item.unit}\n`;
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `Prix_Soustraitance_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function updateLastModified() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleDateString('fr-FR', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        // Initialiser le tableau au chargement
+        document.addEventListener('DOMContentLoaded', initTable);
+    </script>
+</body>
+</html>
