@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #641c1c 0%, #5d6969 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -28,7 +28,7 @@
         }
         
         h1 {
-            color: #333;
+            color: #000000;
             margin-bottom: 10px;
             text-align: center;
             font-size: 2em;
@@ -201,13 +201,9 @@
 <body>
     <div class="container">
         <h1>📋 Liste de Prix Sous-traitance</h1>
-        <div class="date">Année 2025 | Dernière mise à jour: <span id="lastUpdate"></span></div>
+        <div class="date">| Dernière mise à jour: <span id="lastUpdate"></span></div>
         
-        <div class="controls">
-            <button class="btn-edit" onclick="toggleEditMode()">✏️ Mode Édition</button>
-            <button class="btn-export" onclick="exportToCSV()">📥 Télécharger (CSV)</button>
-            <button class="btn-reset" onclick="resetPrices()">🔄 Réinitialiser</button>
-        </div>
+
         
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="🔍 Rechercher un service..." onkeyup="filterTable()">
@@ -226,26 +222,26 @@
         </table>
         
         <div class="footer">
-            <p>💾 Les modifications sont sauvegardées automatiquement</p>
+            <p>Prix en vigueur 2025-2026</p>
         </div>
     </div>
     
     <script>
         const prices = [
-            { id: 1, name: "Bardeau 6/12 et moins incluant sous couche", price: 55.00, unit: "$/paquet" },
-            { id: 2, name: "Bardeau 6 1/12 et plus incluant sous couche", price: 70.00, unit: "$/paquet" },
+            { id: 1, name: "Installation de bardeau 6/12 et moins incluant sous couche", price: 58.00, unit: "$/paquet" },
+            { id: 2, name: "Installation de bardeau 6 1/12 et plus incluant sous couche", price: 73.00, unit: "$/paquet" },
             { id: 3, name: "Lucarne, Petit Toit, Entrée de maison, bay windows, Pen lucarne", price: 150.00, unit: "$/ch." },
             { id: 4, name: "Cobra Snow - Faîte ventilé en plastique", price: 40.00, unit: "$/section" },
             { id: 5, name: "Cobra Snow - Faîte ventilé en acier", price: 70.00, unit: "$/section" },
             { id: 6, name: "Membrane plus de 2 rangs", price: 85.00, unit: "$/rouleau" },
-            { id: 7, name: "Enlever laine en pad", price: 1.00, unit: "$/pi²" },
-            { id: 8, name: "Enlever Laine en vrac", price: 4.00, unit: "$/pi²" },
+            { id: 7, name: "Retirer Laine en pad", price: 1.10, unit: "$/pi²" },
+            { id: 8, name: "Retirer Laine en vrac ", price: 4.00, unit: "$/pi²" },
             { id: 9, name: "Arrachage de bois et contreplaqué", price: 1.20, unit: "$/pi²" },
             { id: 10, name: "Installation de contreplaqué ½\"", price: 40.00, unit: "$/feuille" },
             { id: 11, name: "Installation de contreplaqué 5/8\"", price: 45.00, unit: "$/feuille" },
             { id: 12, name: "Installation de contreplaqué 3/4\"", price: 50.00, unit: "$/feuille" },
             { id: 13, name: "Tourelle", price: 500.00, unit: "$ minimum" },
-            { id: 14, name: "Solin de cheminée en aluminium (matériaux inclus)", price: 550.00, unit: "$ minimum" },
+            { id: 14, name: "Solin de cheminée en aluminium (matériaux inclus Blanc ou noir)", price: 500.00, unit: "$ minimum" },
             { id: 15, name: "Solin de cheminée en acier (supplément)", price: 150.00, unit: "$ plus" },
             { id: 16, name: "Installation de sortie de hotte (cuisine/salle de bain)", price: 350.00, unit: "$" },
             { id: 17, name: "Toit plat", price: 6.00, unit: "$/pi² (min. 600$)" },
@@ -377,6 +373,3 @@
     </script>
 </body>
 </html>
-
-
-
